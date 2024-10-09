@@ -36,6 +36,14 @@ CREATE TABLE MembershipAffiliation (
     FOREIGN KEY (school_id) REFERENCES Schools(school_id)
 );
 
+-- Create Tournaments table (BJJ tournaments)
+CREATE TABLE Tournaments (
+    tournament_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    location VARCHAR(100) NOT NULL,
+    date DATE NOT NULL
+);
+
 -- Create Instructions table (Links Teachers to Students)
 CREATE TABLE Instructions (
     instruction_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -54,15 +62,8 @@ CREATE TABLE Rounds (
     tournament_id INT,
     round_date DATE,
     FOREIGN KEY (person1_id) REFERENCES People(person_id),
-    FOREIGN KEY (person2_id) REFERENCES People(person_id)
-);
-
--- Create Tournaments table (BJJ tournaments)
-CREATE TABLE Tournaments (
-    tournament_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100),
-    location VARCHAR(100),
-    date DATE
+    FOREIGN KEY (person2_id) REFERENCES People(person_id),
+    FOREIGN KEY (tournament_id) REFERENCES Tournaments(tournament_id)
 );
 
 -- Insert BJJ fighters into People table
@@ -105,22 +106,10 @@ INSERT INTO Rounds (person1_id, person2_id, tournament_id, round_date) VALUES
 (1, 2, 1, '2023-06-15'), -- Brian Ortega vs. Kron Gracie in IBJJF World Championship
 (6, 3, 2, '2021-07-10'); -- Gordon Ryan vs. Mackenzie Dern in UFC 264
 
--- Display the results for all tables
-SELECT * FROM Users;
-SELECT * FROM People;
-SELECT * FROM Schools;
-SELECT * FROM MembershipAffiliation;
-SELECT * FROM Instructions;
-SELECT * FROM Rounds;
-SELECT * FROM Tournaments;
-
---------------------------------------------------------------------------------------
--- Demonstrate the following queries on the database:
-
--- a. Selecting data from one table (People)
+-- a. Selecting data from one table
 SELECT * FROM People;
 
--- b. Selecting data from two or more tables using a JOIN condition (People and Schools)
+-- b. Selecting data from two or more tables using a JOIN condition
 SELECT People.name, Schools.name AS school_name, MembershipAffiliation.join_date
 FROM People
 JOIN MembershipAffiliation ON People.person_id = MembershipAffiliation.person_id
@@ -130,15 +119,24 @@ JOIN Schools ON MembershipAffiliation.school_id = Schools.school_id;
 INSERT INTO People (name, age, belt_rank, gender) 
 VALUES ('Andre Galvao', 41, 'Black Belt', 'Male');
 
+-- Display the updated People table after INSERT
+SELECT * FROM People;
+
 -- d. Updating a row (Updating belt rank for Kron Gracie)
 UPDATE People
 SET belt_rank = 'Coral Belt'
 WHERE name = 'Kron Gracie';
 
+-- Display the updated People table after UPDATE
+SELECT * FROM People;
+
 -- e. Deleting a row (Deleting Andre Galvao from People table)
 DELETE FROM People WHERE name = 'Andre Galvao';
 
--- Display data after modifications
+-- Display the updated People table after DELETE
 SELECT * FROM People;
+
+-- Display data after modifications to verify correctness
 SELECT * FROM MembershipAffiliation;
 SELECT * FROM Rounds;
+SELECT * FROM Tournaments;
